@@ -24,6 +24,10 @@ Open Search helps developers find welcoming GitHub repositories by intelligently
 - [Deployment](#deployment)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Support](#support)
+- [Roadmap](#roadmap)
 
 ---
 
