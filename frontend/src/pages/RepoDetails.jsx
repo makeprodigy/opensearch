@@ -263,7 +263,7 @@ export default function RepoDetails({ auth }) {
 
       <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 text-sm text-slate-300">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Activity Snapshot</h2>
+          <h2 className="text-lg font-semibold text-white">Activity Snapshot (Last 30 Days)</h2>
           {isLoadingActivity && (
             <span className="inline-flex items-center gap-2 text-xs text-amber-400">
               <ReloadIcon className="h-3 w-3 animate-spin" />
