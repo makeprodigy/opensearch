@@ -13,21 +13,21 @@ Open Search helps developers find welcoming GitHub repositories by intelligently
 
 ## 📋 Table of Contents
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Getting Started](#getting-started)
-- [API Documentation](#api-documentation)
-- [Database Schema](#database-schema)
-- [Health Score Algorithm](#health-score-algorithm)
-- [Environment Variables](#environment-variables)
-- [Deployment](#deployment)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-- [Support](#support)
-- [Roadmap](#roadmap)
+- Features
+- Tech Stack
+- Architecture
+- Getting Started
+- API Documentation
+- Database Schema
+- Health Score Algorithm
+- Environment Variables
+- Deployment
+- Project Structure
+- Contributing
+- License
+- Acknowledgments
+- Support
+- Roadmap
 
 ---
 
