@@ -1,0 +1,67 @@
+// Prisma schema for GoodFirstFinder backend.
+// Defines relational model for users, repositories, activity metrics, and job queue.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Repository {
+  id                 Int            @id @default(autoincrement())
+  fullName           String         @unique
+  description        String?        @db.Text
+  stars              Int            @default(0)
+  forks              Int            @default(0)
+  openIssues         Int            @default(0)
+  defaultBranch      String?
+  lastCommitAt       DateTime?
+  hasGoodFirstIssues Boolean        @default(false)
+  etag               String?
+  lastFetchedAt      DateTime?
+  healthScore        Int            @default(0)
+  healthRefreshedAt  DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  activities         RepoActivity[]
+}
+
+model RepoActivity {
+  id            Int         @id @default(autoincrement())
+  repoId        Int
+  windowStart   DateTime
+  windowEnd     DateTime
+  prsMerged     Int         @default(0)
+  prsOpened     Int         @default(0)
+  issuesOpened  Int         @default(0)
+  issuesComment Int         @default(0)
+  meanMergeDays Float       @default(0)
+  repo          Repository  @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  @@unique([repoId, windowStart, windowEnd])
+  @@index([repoId, windowEnd])
+}
+
+model FetchJob {
+  id        Int      @id @default(autoincrement())
+  kind      String
+  payload   Json
+  status    String   @default("queued")
+  attempts  Int      @default(0)
+  lastError String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
