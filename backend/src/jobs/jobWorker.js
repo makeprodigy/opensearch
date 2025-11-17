@@ -203,19 +203,33 @@ async function handleRefreshRepo(job) {
   );
 }
 
-// Process jobs more frequently (every 10 seconds instead of every 5 minutes)
-const schedule = process.env.CRON_SCHEDULE || "*/10 * * * * *"; // Every 10 seconds
-logger.info({ schedule }, "Starting job worker cron (runs every 10 seconds)");
+/**
+ * Starts the job worker scheduler.
+ * Can be called from the main app to run worker in the same process.
+ */
+export function startJobWorker() {
+  // Process jobs more frequently (every 10 seconds instead of every 5 minutes)
+  const schedule = process.env.CRON_SCHEDULE || "*/10 * * * * *"; // Every 10 seconds
+  logger.info({ schedule }, "Starting job worker cron (runs every 10 seconds)");
 
-cron.schedule(schedule, () => {
-  processAllQueuedJobs().catch((error) => {
-    logger.error({ err: error }, "Failed to process jobs");
+  cron.schedule(schedule, () => {
+    processAllQueuedJobs().catch((error) => {
+      logger.error({ err: error }, "Failed to process jobs");
+    });
   });
-});
 
-// Process immediately on startup
-logger.info("Processing initial queued jobs...");
-processAllQueuedJobs().catch((error) => {
-  logger.error({ err: error }, "Initial job processing failed");
-});
+  // Process immediately on startup
+  logger.info("Processing initial queued jobs...");
+  processAllQueuedJobs().catch((error) => {
+    logger.error({ err: error }, "Initial job processing failed");
+  });
+}
+
+// If this file is run directly (npm run worker), start the worker
+// Otherwise, it will be started via startJobWorker() from app.js
+// Check if this is the main module
+const isMainModule = process.argv[1] && process.argv[1].endsWith('jobWorker.js');
+if (isMainModule) {
+  startJobWorker();
+}
 

@@ -11,6 +11,7 @@ import authRoutes from "./routes/auth.js";
 import searchRoutes from "./routes/search.js";
 import repoRoutes from "./routes/repos.js";
 import { startCleanupScheduler } from "./jobs/cleanupRepos.js";
+import { startJobWorker } from "./jobs/jobWorker.js";
 
 dotenv.config();
 
@@ -55,6 +56,13 @@ app.listen(port, () => {
   // Runs every hour by default, configurable via CLEANUP_INTERVAL_HOURS env var
   const cleanupIntervalHours = Number.parseInt(process.env.CLEANUP_INTERVAL_HOURS ?? "1", 10);
   startCleanupScheduler(cleanupIntervalHours * 60 * 60 * 1000);
+  
+  // Start the job worker in the same process (for free deployment on Render)
+  // Set ENABLE_WORKER=false to disable if deploying worker separately
+  if (process.env.ENABLE_WORKER !== "false") {
+    logger.info("Starting job worker in the same process...");
+    startJobWorker();
+  }
 });
 
 export default app;
