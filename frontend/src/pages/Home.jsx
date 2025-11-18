@@ -19,7 +19,7 @@ const DEFAULT_FILTER_VALUES = Object.freeze({
   archived: "exclude",
   updatedPreset: "",
   updatedSince: "",
-  sort: "updated",
+  sort: "best-match",
   order: "desc",
 });
 
