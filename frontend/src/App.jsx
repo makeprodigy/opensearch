@@ -1,3 +1,19 @@
+/**
+ * Main application component with routing and authentication.
+ * 
+ * This component:
+ * - Sets up React Router for client-side routing
+ * - Manages authentication state (JWT tokens, user data)
+ * - Provides auth context to child components
+ * - Renders navigation header and footer
+ * 
+ * Routes:
+ *   - / - Home page (search and results)
+ *   - /repos/:owner/:repo - Repository details page
+ *   - /login - Login page
+ *   - /signup - Signup page
+ *   - /dashboard - Protected route (redirects to login if not authenticated)
+ */
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
@@ -8,24 +24,41 @@ import RepoDetails from "./pages/RepoDetails.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 
+/**
+ * Custom hook for managing authentication state.
+ * 
+ * Handles:
+ * - Token storage/retrieval from localStorage
+ * - Token expiration validation
+ * - User data persistence
+ * - Login/logout operations
+ * 
+ * @returns {Object} Auth state and methods: { token, user, login, logout }
+ */
 function useAuth() {
+  // Initialize token from localStorage
   const [token, setToken] = useState(localStorage.getItem("token"));
+  // Initialize user from localStorage (lazy initialization)
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
   });
 
+  // Validate token on mount and when token changes
   useEffect(() => {
     if (!token) {
+      // No token - clear user data
       setUser(null);
       localStorage.removeItem("user");
       return;
     }
     try {
+      // Decode and validate token expiration
       const decoded = jwtDecode(token);
       if (decoded.exp * 1000 < Date.now()) {
         throw new Error("Token expired");
       }
+      // If user not in state but token is valid, restore from localStorage
       if (!user) {
         const stored = localStorage.getItem("user");
         if (stored) {
@@ -33,6 +66,7 @@ function useAuth() {
         }
       }
     } catch (error) {
+      // Token invalid or expired - clear all auth data
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       setToken(null);
@@ -40,16 +74,19 @@ function useAuth() {
     }
   }, [token, user]);
 
+  // Return memoized auth object to prevent unnecessary re-renders
   return useMemo(
     () => ({
       token,
       user,
+      // Login: store token and user data in localStorage and state
       login(nextToken, nextUser) {
         localStorage.setItem("token", nextToken);
         localStorage.setItem("user", JSON.stringify(nextUser));
         setToken(nextToken);
         setUser(nextUser);
       },
+      // Logout: clear all auth data
       logout() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -61,32 +98,56 @@ function useAuth() {
   );
 }
 
+/**
+ * Protected route wrapper component.
+ * 
+ * Redirects to login page if user is not authenticated.
+ * Preserves the intended destination in location state for redirect after login.
+ * 
+ * @param {Object} props
+ * @param {ReactNode} props.children - Child components to render if authenticated
+ * @param {boolean} props.isAuthenticated - Whether user is authenticated
+ */
 function ProtectedRoute({ children, isAuthenticated }) {
   const location = useLocation();
   if (!isAuthenticated) {
+    // Redirect to login, preserving intended destination
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
   return children;
 }
 
+/**
+ * Main App component - root of the application.
+ * 
+ * Renders:
+ * - Header with navigation and auth controls
+ * - Main content area with routes
+ * - Footer
+ */
 export default function App() {
   const auth = useAuth();
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
+      {/* Application header with logo and navigation */}
       <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+          {/* Logo linking to home */}
           <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-brand">
             <GitHubLogoIcon className="h-6 w-6" />
             <span>Open Search</span>
           </Link>
+          {/* Navigation: show user info if logged in, login/signup if not */}
           <nav className="flex items-center gap-3 text-sm">
             {auth.user ? (
               <>
+                {/* Display username */}
                 <span className="rounded-full bg-slate-800 px-3 py-1 text-xs uppercase tracking-wide text-slate-300">
                   {auth.user.username}
                 </span>
+                {/* Logout button */}
                 <button
                   type="button"
                   className="rounded-lg bg-slate-800 px-3 py-1 font-medium text-slate-200 transition hover:bg-slate-700"
@@ -100,9 +161,11 @@ export default function App() {
               </>
             ) : (
               <>
+                {/* Login link */}
                 <Link to="/login" className="text-slate-300 hover:text-slate-100">
                   Log in
                 </Link>
+                {/* Signup button */}
                 <Link
                   to="/signup"
                   className="rounded-lg bg-brand px-4 py-2 font-semibold text-white transition hover:bg-brand-dark"
@@ -115,12 +178,15 @@ export default function App() {
         </div>
       </header>
 
+      {/* Main content area with routes */}
       <main className="mx-auto max-w-6xl px-4 py-8">
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/repos/:owner/:repo" element={<RepoDetails auth={auth} />} />
           <Route path="/login" element={<Login auth={auth} />} />
           <Route path="/signup" element={<Signup auth={auth} />} />
+          {/* Protected route - requires authentication */}
           <Route
             path="/dashboard"
             element={
@@ -132,6 +198,7 @@ export default function App() {
         </Routes>
       </main>
 
+      {/* Application footer */}
       <footer className="border-t border-slate-800 bg-slate-900/80">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 text-xs text-slate-500">
           <span>&copy; {new Date().getFullYear()} Open Search</span>

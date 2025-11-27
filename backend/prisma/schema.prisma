@@ -1,5 +1,14 @@
 // Prisma schema for GoodFirstFinder backend.
-// Defines relational model for users, repositories, activity metrics, and job queue.
+// 
+// This schema defines the relational database model for:
+// - User authentication (User)
+// - Repository caching and metadata (Repository)
+// - Activity metrics tracking (RepoActivity)
+// - Background job queue (FetchJob)
+//
+// The schema uses MySQL as the database provider and includes
+// cascade deletes for data cleanup (e.g., deleting a repository
+// automatically deletes its activity records).
 
 generator client {
   provider = "prisma-client-js"
@@ -10,6 +19,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/**
+ * User model - stores authentication data for registered users.
+ * 
+ * Fields:
+ *   - id: Auto-increment primary key
+ *   - username: Unique username (stored lowercase for consistency)
+ *   - email: Unique email address (stored lowercase)
+ *   - passwordHash: bcrypt hash of password (12 rounds)
+ *   - createdAt: Account creation timestamp
+ *   - updatedAt: Last update timestamp (auto-updated)
+ */
 model User {
   id           Int       @id @default(autoincrement())
   username     String    @unique
@@ -19,48 +39,112 @@ model User {
   updatedAt    DateTime  @updatedAt
 }
 
+/**
+ * Repository model - caches GitHub repository metadata.
+ * 
+ * This table stores repository data fetched from GitHub API to enable:
+ * - Fast retrieval without hitting GitHub API every time
+ * - Health score calculation and tracking
+ * - Activity metrics aggregation
+ * 
+ * Key fields:
+ *   - fullName: Unique identifier in "owner/repo" format
+ *   - etag: GitHub ETag for conditional requests (304 Not Modified)
+ *   - lastFetchedAt: Used for TTL-based cleanup (repos older than TTL are deleted)
+ *   - healthScore: Calculated health score (0-100) based on activity metrics
+ *   - healthRefreshedAt: When health score was last recalculated
+ * 
+ * Relationships:
+ *   - activities: One-to-many with RepoActivity (cascade delete)
+ */
 model Repository {
   id                 Int            @id @default(autoincrement())
-  fullName           String         @unique
+  fullName           String         @unique // Format: "owner/repo"
   description        String?        @db.Text
   stars              Int            @default(0)
   forks              Int            @default(0)
   openIssues         Int            @default(0)
   defaultBranch      String?
-  lastCommitAt       DateTime?
+  lastCommitAt       DateTime?      // Last push timestamp from GitHub
   hasGoodFirstIssues Boolean        @default(false)
-  etag               String?
-  lastFetchedAt      DateTime?
-  healthScore        Int            @default(0)
-  healthRefreshedAt  DateTime?
+  etag               String?        // GitHub ETag for conditional requests
+  lastFetchedAt      DateTime?      // Used for TTL cleanup (repos older than TTL are deleted)
+  healthScore        Int            @default(0) // 0-100 health score
+  healthRefreshedAt  DateTime?      // When health score was last calculated
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
-  activities         RepoActivity[]
+  activities         RepoActivity[] // Related activity records (30-day windows)
 }
 
+/**
+ * RepoActivity model - stores 30-day activity metrics for repositories.
+ * 
+ * This table tracks activity metrics over rolling 30-day windows:
+ * - Pull requests opened and merged
+ * - Issues opened and total comments
+ * - Mean time to merge PRs (in days)
+ * 
+ * These metrics are used to calculate health scores, which prioritize
+ * actively maintained projects with responsive maintainers.
+ * 
+ * Key fields:
+ *   - windowStart/windowEnd: 30-day time window (e.g., last 30 days)
+ *   - prsMerged/prsOpened: PR activity counts
+ *   - issuesOpened/issuesComment: Issue activity counts
+ *   - meanMergeDays: Average days to merge a PR (maintainer responsiveness)
+ * 
+ * Constraints:
+ *   - Unique constraint on (repoId, windowStart, windowEnd) prevents duplicates
+ *   - Index on (repoId, windowEnd) for efficient queries of latest activity
+ *   - Cascade delete: deleting a repository deletes its activity records
+ */
 model RepoActivity {
   id            Int         @id @default(autoincrement())
-  repoId        Int
-  windowStart   DateTime
-  windowEnd     DateTime
-  prsMerged     Int         @default(0)
-  prsOpened     Int         @default(0)
-  issuesOpened  Int         @default(0)
-  issuesComment Int         @default(0)
-  meanMergeDays Float       @default(0)
+  repoId        Int         // Foreign key to Repository
+  windowStart   DateTime    // Start of 30-day window
+  windowEnd     DateTime    // End of 30-day window
+  prsMerged     Int         @default(0) // PRs merged in this window
+  prsOpened     Int         @default(0) // PRs opened in this window
+  issuesOpened  Int         @default(0) // Issues opened in this window
+  issuesComment Int         @default(0) // Total issue comments in this window
+  meanMergeDays Float       @default(0) // Average days to merge PRs
   repo          Repository  @relation(fields: [repoId], references: [id], onDelete: Cascade)
 
-  @@unique([repoId, windowStart, windowEnd])
-  @@index([repoId, windowEnd])
+  @@unique([repoId, windowStart, windowEnd]) // One activity record per repo per window
+  @@index([repoId, windowEnd]) // Index for efficient latest activity queries
 }
 
+/**
+ * FetchJob model - background job queue for repository updates.
+ * 
+ * This table implements a simple job queue for asynchronous tasks:
+ * - Repository refresh jobs (fetch fresh data from GitHub)
+ * - Health score recalculation
+ * - Activity data updates
+ * 
+ * Job lifecycle:
+ *   1. queued - Job is created and waiting to be processed
+ *   2. processing - Worker is currently processing the job
+ *   3. completed - Job finished successfully
+ *   4. failed - Job failed after max retry attempts (3)
+ * 
+ * Key fields:
+ *   - kind: Job type (e.g., "refreshRepo")
+ *   - payload: JSON data for the job (e.g., { repoId: 123 })
+ *   - status: Current job status (queued/processing/completed/failed)
+ *   - attempts: Number of retry attempts (max: 3)
+ *   - lastError: Error message if job failed
+ * 
+ * The background worker (jobWorker.js) polls this table every 10 seconds
+ * and processes queued jobs in FIFO order.
+ */
 model FetchJob {
   id        Int      @id @default(autoincrement())
-  kind      String
-  payload   Json
-  status    String   @default("queued")
-  attempts  Int      @default(0)
-  lastError String?
+  kind      String   // Job type (e.g., "refreshRepo")
+  payload   Json     // Job data (e.g., { repoId: 123 })
+  status    String   @default("queued") // queued | processing | completed | failed
+  attempts  Int      @default(0) // Retry count (max: 3)
+  lastError String?  // Error message if job failed
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

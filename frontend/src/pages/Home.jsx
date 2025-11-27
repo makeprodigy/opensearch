@@ -1,3 +1,16 @@
+/**
+ * Home page component - main search interface.
+ * 
+ * This component handles:
+ * - Repository search with GitHub query syntax
+ * - Advanced filtering (language, stars, topics, license, etc.)
+ * - Pagination of search results
+ * - URL state synchronization (search params in URL)
+ * - Query building from filter state
+ * 
+ * The search query is built from filter inputs and sent to the backend,
+ * which proxies to GitHub's search API and calculates health scores.
+ */
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -6,25 +19,33 @@ import RepoCard from "../components/RepoCard.jsx";
 import Skeleton from "../components/Skeleton.jsx";
 import api from "../services/api.js";
 
+// Number of results to display per page
 const RESULTS_PER_PAGE = 21;
 
+// Default filter values (immutable object)
 const DEFAULT_FILTER_VALUES = Object.freeze({
-  keywords: "",
-  language: "",
-  minStars: 50,
-  minForks: "",
-  minGoodFirstIssues: 1,
-  topics: "",
-  license: "",
-  archived: "exclude",
-  updatedPreset: "",
-  updatedSince: "",
-  sort: "best-match",
-  order: "desc",
+  keywords: "", // Free-text search keywords
+  language: "", // Programming language filter
+  minStars: 50, // Minimum stars (default: 50)
+  minForks: "", // Minimum forks
+  minGoodFirstIssues: 1, // Minimum good-first-issues (default: 1)
+  topics: "", // Comma-separated topic tags
+  license: "", // License filter
+  archived: "exclude", // Include/exclude archived repos
+  updatedPreset: "", // Quick date presets (30/90/365 days)
+  updatedSince: "", // Custom date filter
+  sort: "best-match", // Sort order
+  order: "desc", // Sort direction
 });
 
+// Available date presets for "updated since" filter
 const UPDATED_PRESETS = ["30", "90", "365"];
 
+/**
+ * Creates default filter object with optional overrides.
+ * @param {Object} overrides - Filter values to override defaults
+ * @returns {Object} Filter object
+ */
 function createDefaultFilters(overrides = {}) {
   return { ...DEFAULT_FILTER_VALUES, ...overrides };
 }
@@ -89,45 +110,69 @@ function normalizeTopicSlug(topic) {
     .replace(/[^a-z0-9-]/g, "");
 }
 
+/**
+ * Builds GitHub search query string from filter state.
+ * 
+ * Converts filter UI state into GitHub's search query syntax:
+ * - Keywords: free text
+ * - Language: language:python
+ * - Topics: topic:react topic:typescript
+ * - Stars: stars:>=100
+ * - Date: pushed:>=2024-01-01
+ * 
+ * @param {Object} filters - Filter state object
+ * @returns {string} GitHub search query string
+ */
 function buildQueryFromFilters(filters) {
   const tokens = [];
+  
+  // Add keywords (free text search)
   if (filters.keywords.trim()) {
     tokens.push(filters.keywords.trim());
   }
+  
+  // Add language filter
   if (filters.language) {
     tokens.push(`language:${filters.language}`);
   }
 
+  // Add topic filters (comma-separated, normalized)
   const topicTokens = filters.topics
     .split(",")
     .map((topic) => normalizeTopicSlug(topic))
     .filter(Boolean);
   topicTokens.forEach((topic) => tokens.push(`topic:${topic}`));
 
+  // Add license filter
   if (filters.license) {
     tokens.push(`license:${filters.license}`);
   }
 
+  // Add minimum stars filter
   if (filters.minStars !== "" && !Number.isNaN(filters.minStars)) {
     tokens.push(`stars:>=${filters.minStars}`);
   }
 
+  // Add minimum forks filter
   if (filters.minForks !== "" && !Number.isNaN(filters.minForks)) {
     tokens.push(`forks:>=${filters.minForks}`);
   }
 
+  // Add good-first-issues filter (always include if not specified)
   if (filters.minGoodFirstIssues !== "" && !Number.isNaN(filters.minGoodFirstIssues)) {
     tokens.push(`good-first-issues:>=${filters.minGoodFirstIssues}`);
   } else {
-    tokens.push("good-first-issues:>0");
+    tokens.push("good-first-issues:>0"); // Default: require at least 1
   }
 
+  // Add archived filter
   if (filters.archived === "exclude") {
     tokens.push("archived:false");
   } else if (filters.archived === "only") {
     tokens.push("archived:true");
   }
 
+  // Add date filter (updated since)
   if (filters.updatedPreset === "custom" && filters.updatedSince) {
     tokens.push(`pushed:>=${filters.updatedSince}`);
   } else if (filters.updatedPreset && filters.updatedPreset !== "custom") {
@@ -221,13 +266,20 @@ function parseQueryToFilters(rawQuery, sortParam, orderParam) {
   return filters;
 }
 
+/**
+ * Home page component - main entry point for search.
+ */
 export default function Home() {
+  // Get URL search params for state synchronization
   const [params, setParams] = useSearchParams();
 
+  // Component state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [repos, setRepos] = useState([]);
   const [total, setTotal] = useState(0);
+  
+  // Extract search parameters from URL
   const queryParam = params.get("q") ?? DEFAULT_QUERY;
   const sortParam = params.get("sort") ?? DEFAULT_FILTER_VALUES.sort;
   const orderParam =
@@ -236,23 +288,28 @@ export default function Home() {
   const pageParam = Number.parseInt(params.get("page") ?? "1", 10);
   const page = Number.isNaN(pageParam) ? 1 : Math.max(1, pageParam);
 
+  // Derive filter state from URL params (memoized for performance)
   const derivedFilters = useMemo(
     () => parseQueryToFilters(queryParam, sortParam, orderParam),
     [queryParam, sortParam, orderParam],
   );
 
+  // Local filter state (synced with URL params)
   const [filters, setFilters] = useState(derivedFilters);
 
+  // Sync local filter state when URL params change
   useEffect(() => {
     setFilters(derivedFilters);
   }, [derivedFilters]);
 
+  // Fetch search results when query params change
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       setError(null);
 
       try {
+        // Call backend search API (which proxies to GitHub)
         const response = await api.get("/search", {
           params: {
             q: queryParam,
@@ -274,7 +331,13 @@ export default function Home() {
     fetchData();
   }, [queryParam, page, sortParam, orderParam]);
 
+  /**
+   * Handles filter changes from FilterSidebar.
+   * Normalizes filter values, builds query, and updates URL params.
+   * Resets to page 1 when filters change.
+   */
   function handleApplyFilters(nextFilters) {
+    // Normalize numeric values (remove invalid entries)
     const normalized = {
       ...nextFilters,
       minStars: normalizeNumeric(nextFilters.minStars),
@@ -286,11 +349,13 @@ export default function Home() {
 
     setFilters(normalized);
 
+    // Build GitHub query from filters
     const nextQuery = buildQueryFromFilters(normalized) || DEFAULT_QUERY;
 
+    // Update URL params (triggers search)
     const nextSearchParams = {
       q: nextQuery,
-      page: "1",
+      page: "1", // Reset to first page when filters change
       sort: normalized.sort,
       order: normalized.order,
     };
@@ -298,16 +363,24 @@ export default function Home() {
     setParams(nextSearchParams);
   }
 
+  /**
+   * Resets all filters to default values.
+   */
   function handleResetFilters() {
     handleApplyFilters(createDefaultFilters());
   }
 
+  /**
+   * Handles pagination (previous/next page).
+   * @param {number} delta - Page change (-1 for previous, +1 for next)
+   */
   function handlePageChange(delta) {
     const nextPage = Math.max(1, page + delta);
     if (nextPage === page) {
-      return;
+      return; // No change needed
     }
 
+    // Update URL with new page number
     const nextSearchParams = {
       q: queryParam,
       page: String(nextPage),
