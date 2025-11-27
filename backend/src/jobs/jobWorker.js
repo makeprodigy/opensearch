@@ -280,7 +280,7 @@ async function handleRefreshRepo(job) {
  * - Processes all queued jobs on startup
  * - Continues processing jobs as they're queued
  * 
- * Schedule format: cron expression (e.g., "*/10 * * * * *" = every 10 seconds)
+ * Schedule format: cron expression (default: runs every 10 seconds, configurable via CRON_SCHEDULE)
  */
 export function startJobWorker() {
   // Process jobs frequently (every 10 seconds) for responsive updates
