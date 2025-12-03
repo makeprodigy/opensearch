@@ -1,10 +1,11 @@
 /**
- * Authentication routes for user registration and login.
+ * Authentication routes for user registration, login, and account management.
  * 
  * This module handles:
  * - User signup with password hashing (bcrypt, 12 rounds)
  * - User login with credential verification
  * - JWT token generation for authenticated sessions
+ * - Account deletion with password verification
  * 
  * All passwords are hashed before storage, and JWT tokens are used
  * for stateless authentication across the application.
@@ -14,6 +15,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import prisma from "../services/prismaClient.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = Router();
 // JWT token expiration time (7 days)
@@ -135,6 +137,64 @@ router.post("/login", async (req, res, next) => {
         createdAt: user.createdAt,
       },
       token,
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+/**
+ * DELETE /api/auth/account
+ * 
+ * Permanently deletes the authenticated user's account.
+ * Requires password verification for security.
+ * 
+ * Request body:
+ *   - password: string (required for verification)
+ * 
+ * Returns:
+ *   - 200: Account deleted successfully
+ *   - 400: Missing password
+ *   - 401: Unauthorized (missing/invalid token) or incorrect password
+ *   - 404: User not found
+ * 
+ * Note: This action is irreversible. All user data will be permanently deleted.
+ */
+router.delete("/account", authMiddleware, async (req, res, next) => {
+  try {
+    const { password } = req.body ?? {};
+
+    // Password is required for account deletion (security measure)
+    if (!password) {
+      return res.status(400).json({ message: "Password is required to delete account" });
+    }
+
+    // Get the authenticated user's ID from the middleware
+    const userId = req.user.id;
+
+    // Fetch user from database to verify password
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verify password before deletion
+    const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+    if (!passwordMatches) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+
+    // Delete the user account (this is permanent!)
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return res.json({
+      message: "Account deleted successfully",
+      deletedUserId: userId,
     });
   } catch (error) {
     return next(error);

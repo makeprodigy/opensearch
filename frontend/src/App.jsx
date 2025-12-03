@@ -12,6 +12,7 @@
  *   - /repos/:owner/:repo - Repository details page
  *   - /login - Login page
  *   - /signup - Signup page
+ *   - /profile - User profile page (protected)
  *   - /dashboard - Protected route (redirects to login if not authenticated)
  */
 import { useEffect, useMemo, useState } from "react";
@@ -23,6 +24,7 @@ import Home from "./pages/Home.jsx";
 import RepoDetails from "./pages/RepoDetails.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
 
 /**
  * Custom hook for managing authentication state.
@@ -143,10 +145,16 @@ export default function App() {
           <nav className="flex items-center gap-3 text-sm">
             {auth.user ? (
               <>
-                {/* Display username */}
-                <span className="rounded-full bg-slate-800 px-3 py-1 text-xs uppercase tracking-wide text-slate-300">
+                {/* User badge - clickable, links to profile */}
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2 rounded-full bg-slate-800 px-3 py-1 text-xs uppercase tracking-wide text-slate-300 transition hover:bg-slate-700 hover:text-white"
+                >
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand/30 text-[10px] font-bold text-brand">
+                    {auth.user.username.charAt(0).toUpperCase()}
+                  </span>
                   {auth.user.username}
-                </span>
+                </Link>
                 {/* Logout button */}
                 <button
                   type="button"
@@ -186,7 +194,15 @@ export default function App() {
           <Route path="/repos/:owner/:repo" element={<RepoDetails auth={auth} />} />
           <Route path="/login" element={<Login auth={auth} />} />
           <Route path="/signup" element={<Signup auth={auth} />} />
-          {/* Protected route - requires authentication */}
+          {/* Protected routes - require authentication */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute isAuthenticated={Boolean(auth.user)}>
+                <UserProfile auth={auth} />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={
