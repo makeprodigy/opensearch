@@ -62,35 +62,35 @@ function DeleteAccountModal({ isOpen, onClose, onConfirm, isDeleting, error }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={handleClose}
       />
       
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-md rounded-2xl border border-red-500/30 bg-slate-900 p-6 shadow-2xl shadow-red-500/10">
+      <div className="relative z-10 w-full max-w-md rounded-2xl border border-red-300 bg-white p-6 shadow-2xl">
         {/* Close button */}
         <button
           type="button"
           onClick={handleClose}
-          className="absolute right-4 top-4 text-slate-400 hover:text-slate-200"
+          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
         >
           <Cross2Icon className="h-5 w-5" />
         </button>
 
         {/* Warning header */}
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/20">
-            <ExclamationTriangleIcon className="h-6 w-6 text-red-400" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+            <ExclamationTriangleIcon className="h-6 w-6 text-red-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Delete Account</h2>
-            <p className="text-sm text-slate-400">This action cannot be undone</p>
+            <h2 className="text-lg font-semibold text-text-primary">Delete Account</h2>
+            <p className="text-sm text-text-secondary">This action cannot be undone</p>
           </div>
         </div>
 
         {/* Warning message */}
-        <div className="mb-6 rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-          <p className="text-sm text-red-200">
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
+          <p className="text-sm text-red-700">
             <strong>Warning:</strong> Deleting your account will permanently remove all your data, 
             including your profile and preferences. This action is irreversible.
           </p>
@@ -98,7 +98,7 @@ function DeleteAccountModal({ isOpen, onClose, onConfirm, isDeleting, error }) {
 
         {/* Error message */}
         {error && (
-          <div className="mb-4 rounded-lg border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-200">
+          <div className="mb-4 rounded-lg border border-rose-400 bg-rose-50 p-3 text-sm text-rose-700">
             {error}
           </div>
         )}
@@ -106,7 +106,7 @@ function DeleteAccountModal({ isOpen, onClose, onConfirm, isDeleting, error }) {
         {/* Password confirmation form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+            <label className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
               Enter your password to confirm
             </label>
             <input
@@ -115,7 +115,7 @@ function DeleteAccountModal({ isOpen, onClose, onConfirm, isDeleting, error }) {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Your password"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/30"
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-text-primary placeholder:text-gray-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/30"
               disabled={isDeleting}
             />
           </div>
@@ -124,7 +124,7 @@ function DeleteAccountModal({ isOpen, onClose, onConfirm, isDeleting, error }) {
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-700 disabled:opacity-50"
+              className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-text-primary transition hover:bg-gray-50 disabled:opacity-50"
               disabled={isDeleting}
             >
               Cancel
@@ -148,12 +148,12 @@ function DeleteAccountModal({ isOpen, onClose, onConfirm, isDeleting, error }) {
  */
 function FeatureCard({ icon: Icon, title, description }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4 transition hover:border-slate-700 hover:bg-slate-900/60">
-      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-brand/20">
+    <div className="rounded-xl border border-brand-light bg-white p-4 shadow-sm transition hover:border-brand hover:shadow-card">
+      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-brand-muted">
         <Icon className="h-5 w-5 text-brand" />
       </div>
-      <h3 className="mb-1 font-medium text-white">{title}</h3>
-      <p className="text-sm text-slate-400">{description}</p>
+      <h3 className="mb-1 font-medium text-text-primary">{title}</h3>
+      <p className="text-sm text-text-secondary">{description}</p>
     </div>
   );
 }
@@ -198,59 +198,59 @@ export default function UserProfile({ auth }) {
     <div className="mx-auto max-w-3xl space-y-8">
       {/* Page header */}
       <header className="space-y-2">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Your Profile</h1>
-        <p className="text-slate-400">Manage your account settings and preferences</p>
+        <h1 className="text-2xl font-bold text-text-primary sm:text-3xl">Your Profile</h1>
+        <p className="text-text-secondary">Manage your account settings and preferences</p>
       </header>
 
       {/* User info card */}
-      <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-xl shadow-slate-950/20">
-        <h2 className="mb-6 text-lg font-semibold text-white">Account Information</h2>
+      <section className="rounded-2xl border border-brand-light bg-white p-6 shadow-card">
+        <h2 className="mb-6 text-lg font-semibold text-text-primary">Account Information</h2>
         
         <div className="space-y-4">
           {/* Username */}
-          <div className="flex items-center gap-4 rounded-lg bg-slate-950/50 p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand/20">
+          <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-muted">
               <PersonIcon className="h-5 w-5 text-brand" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Username</p>
-              <p className="text-white">{user.username}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Username</p>
+              <p className="text-text-primary">{user.username}</p>
             </div>
           </div>
 
           {/* Email */}
-          <div className="flex items-center gap-4 rounded-lg bg-slate-950/50 p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20">
-              <EnvelopeClosedIcon className="h-5 w-5 text-emerald-400" />
+          <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
+              <EnvelopeClosedIcon className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Email</p>
-              <p className="text-white">{user.email}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Email</p>
+              <p className="text-text-primary">{user.email}</p>
             </div>
           </div>
 
           {/* Member since */}
-          <div className="flex items-center gap-4 rounded-lg bg-slate-950/50 p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-500/20">
-              <CalendarIcon className="h-5 w-5 text-purple-400" />
+          <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
+              <CalendarIcon className="h-5 w-5 text-purple-600" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Member Since</p>
-              <p className="text-white">{formatDate(user.createdAt)}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Member Since</p>
+              <p className="text-text-primary">{formatDate(user.createdAt)}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Coming soon section */}
-      <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-xl shadow-slate-950/20">
+      <section className="rounded-2xl border border-brand-light bg-white p-6 shadow-card">
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/20">
-            <RocketIcon className="h-5 w-5 text-amber-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
+            <RocketIcon className="h-5 w-5 text-amber-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Coming Soon</h2>
-            <p className="text-sm text-slate-400">Exciting features we're working on</p>
+            <h2 className="text-lg font-semibold text-text-primary">Coming Soon</h2>
+            <p className="text-sm text-text-secondary">Exciting features we're working on</p>
           </div>
         </div>
 
@@ -277,37 +277,37 @@ export default function UserProfile({ auth }) {
           />
         </div>
 
-        <div className="mt-6 rounded-lg border border-amber-500/20 bg-amber-500/10 p-4 text-center">
-          <p className="text-sm text-amber-200">
+        <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-center">
+          <p className="text-sm text-amber-800">
             We're constantly improving Open Search. Stay tuned for these awesome features!
           </p>
         </div>
       </section>
 
       {/* Danger zone */}
-      <section className="rounded-2xl border border-red-500/30 bg-slate-900/60 p-6 shadow-xl shadow-red-500/5">
+      <section className="rounded-2xl border border-red-300 bg-white p-6 shadow-card">
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-500/20">
-            <ExclamationTriangleIcon className="h-5 w-5 text-red-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100">
+            <ExclamationTriangleIcon className="h-5 w-5 text-red-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Danger Zone</h2>
-            <p className="text-sm text-slate-400">Irreversible account actions</p>
+            <h2 className="text-lg font-semibold text-text-primary">Danger Zone</h2>
+            <p className="text-sm text-text-secondary">Irreversible account actions</p>
           </div>
         </div>
 
-        <div className="rounded-lg border border-red-500/20 bg-slate-950/50 p-4">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="font-medium text-white">Delete Account</h3>
-              <p className="text-sm text-slate-400">
+              <h3 className="font-medium text-text-primary">Delete Account</h3>
+              <p className="text-sm text-text-secondary">
                 Permanently delete your account and all associated data.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setShowDeleteModal(true)}
-              className="whitespace-nowrap rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/20 hover:text-red-300"
+              className="whitespace-nowrap rounded-lg border border-red-400 bg-white px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
             >
               Delete Account
             </button>
@@ -329,4 +329,3 @@ export default function UserProfile({ auth }) {
     </div>
   );
 }
-

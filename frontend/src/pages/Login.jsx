@@ -28,21 +28,21 @@ export default function Login({ auth }) {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-8 rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-xl shadow-slate-950/20">
+    <div className="mx-auto max-w-md space-y-8 rounded-2xl border bg-white p-8 shadow-lg" style={{ borderColor: '#D4EAD8' }}>
       <header className="space-y-2 text-center">
-        <h1 className="text-2xl font-semibold text-white">Welcome back</h1>
-        <p className="text-sm text-slate-400">Log in to queue refreshes and save favourite repos.</p>
+        <h1 className="text-2xl font-semibold text-gray-900">Welcome back</h1>
+        <p className="text-sm text-gray-600">Log in to queue refreshes and save favourite repos.</p>
       </header>
 
       {error && (
-        <div className="rounded-lg border border-rose-500/40 bg-rose-500/10 p-3 text-xs text-rose-200">
+        <div className="rounded-lg border border-rose-400 bg-rose-50 p-3 text-xs text-rose-700 font-medium">
           {error}
         </div>
       )}
 
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <label className="text-xs font-bold uppercase tracking-wide text-gray-700">
             Email
           </label>
           <input
@@ -50,11 +50,20 @@ export default function Login({ auth }) {
             required
             value={form.email}
             onChange={(event) => setForm({ ...form, email: event.target.value })}
-            className="w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
+            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2"
+            style={{ transition: 'all 0.2s ease' }}
+            onFocus={(e) => {
+              e.target.style.borderColor = '#2F7A4F';
+              e.target.style.boxShadow = '0 0 0 3px rgba(47, 122, 79, 0.1)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = '#D1D5DB';
+              e.target.style.boxShadow = 'none';
+            }}
           />
         </div>
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <label className="text-xs font-bold uppercase tracking-wide text-gray-700">
             Password
           </label>
           <input
@@ -62,25 +71,45 @@ export default function Login({ auth }) {
             required
             value={form.password}
             onChange={(event) => setForm({ ...form, password: event.target.value })}
-            className="w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
+            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2"
+            style={{ transition: 'all 0.2s ease' }}
+            onFocus={(e) => {
+              e.target.style.borderColor = '#2F7A4F';
+              e.target.style.boxShadow = '0 0 0 3px rgba(47, 122, 79, 0.1)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = '#D1D5DB';
+              e.target.style.boxShadow = 'none';
+            }}
           />
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-brand px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50"
+          style={{
+            backgroundColor: '#2F7A4F',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = '#1F5A3A')}
+          onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = '#2F7A4F')}
         >
           {loading ? "Signing in…" : "Sign in"}
         </button>
       </form>
 
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-gray-600 text-center">
         New here?{" "}
-        <Link to="/signup" className="text-brand hover:text-brand-dark">
+        <Link 
+          to="/signup" 
+          className="font-bold transition"
+          style={{ color: '#2F7A4F', transition: 'color 0.2s ease' }}
+          onMouseEnter={(e) => e.target.style.color = '#1F5A3A'}
+          onMouseLeave={(e) => e.target.style.color = '#2F7A4F'}
+        >
           Create an account
         </Link>
       </p>
     </div>
   );
 }
-

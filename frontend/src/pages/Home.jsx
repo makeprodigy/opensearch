@@ -396,13 +396,13 @@ export default function Home() {
   return (
     <div className="space-y-10">
       <section className="space-y-5 text-center">
-        <div className="inline-flex items-center rounded-full border border-brand/40 bg-brand/10 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-brand">
+        <div className="inline-flex items-center rounded-full border-2 px-4 py-1 text-xs font-bold uppercase tracking-wide" style={{ borderColor: '#2F7A4F', backgroundColor: '#E8F5E9', color: '#2F7A4F' }}>
           Good first issues at a glance
         </div>
-        <h1 className="text-3xl font-bold text-white sm:text-5xl">
+        <h1 className="text-3xl font-bold text-gray-900 sm:text-5xl">
           Discover welcoming open-source projects.
         </h1>
-        <p className="mx-auto max-w-2xl text-sm text-slate-400 sm:text-base">
+        <p className="mx-auto max-w-2xl text-sm text-gray-700 sm:text-base">
           Open Search surfaces repositories that actively maintain good first issues.
           Each project is ranked by a health score that blends stars, recency, and community activity.
         </p>
@@ -419,13 +419,13 @@ export default function Home() {
           {loading ? (
             <Skeleton rows={7} />
           ) : error ? (
-            <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-6 text-sm text-rose-200">
+            <div className="rounded-xl border border-rose-400 bg-rose-50 p-6 text-sm text-rose-700 font-medium">
               {error}
             </div>
           ) : (
             <>
               {repos.length === 0 ? (
-                <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-10 text-center text-sm text-slate-400">
+                <div className="rounded-xl border border-gray-200 bg-white p-10 text-center text-sm text-gray-600 shadow-sm">
                   No repositories found. Try adjusting your filters or broadening the search.
                 </div>
               ) : (
@@ -435,14 +435,25 @@ export default function Home() {
                   ))}
                 </div>
               )}
-              <div className="flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center justify-between text-xs text-gray-700 font-medium">
                 <span>
                   Page {page} of {totalPages}
                 </span>
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="rounded-lg border border-slate-800 px-3 py-1 transition hover:border-brand disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-gray-900 font-medium shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50"
+                    style={{ transition: 'all 0.2s ease' }}
+                    onMouseEnter={(e) => {
+                      if (page > 1) {
+                        e.target.style.borderColor = '#2F7A4F';
+                        e.target.style.backgroundColor = '#E8F5E9';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.borderColor = '#D1D5DB';
+                      e.target.style.backgroundColor = '#FFFFFF';
+                    }}
                     onClick={() => handlePageChange(-1)}
                     disabled={page <= 1}
                   >
@@ -450,7 +461,18 @@ export default function Home() {
                   </button>
                   <button
                     type="button"
-                    className="rounded-lg border border-slate-800 px-3 py-1 transition hover:border-brand disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-gray-900 font-medium shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50"
+                    style={{ transition: 'all 0.2s ease' }}
+                    onMouseEnter={(e) => {
+                      if (page < totalPages) {
+                        e.target.style.borderColor = '#2F7A4F';
+                        e.target.style.backgroundColor = '#E8F5E9';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.borderColor = '#D1D5DB';
+                      e.target.style.backgroundColor = '#FFFFFF';
+                    }}
                     onClick={() => handlePageChange(1)}
                     disabled={page >= totalPages}
                   >
@@ -465,4 +487,3 @@ export default function Home() {
     </div>
   );
 }
-

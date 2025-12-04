@@ -4,5 +4,26 @@
 
 body {
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #FEFEFE 0%, #E8F5E9 50%, #F5F7F6 100%);
+  min-height: 100vh;
 }
 
+/* Custom scrollbar for the cream-green theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5F7F6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2F7A4F;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1F5A3A;
+}

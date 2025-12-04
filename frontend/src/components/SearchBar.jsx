@@ -12,14 +12,14 @@ export default function SearchBar({ initialQuery = "", onSearch }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 shadow-lg shadow-slate-950/30 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/40"
+      className="flex items-center gap-2 rounded-xl border border-brand-light bg-white px-4 py-3 shadow-card focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/40"
     >
-      <MagnifyingGlassIcon className="h-5 w-5 text-slate-400" />
+      <MagnifyingGlassIcon className="h-5 w-5 text-text-muted" />
       <input
         type="search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        className="h-full w-full bg-transparent text-sm text-slate-100 outline-none placeholder:text-slate-500"
+        className="h-full w-full bg-transparent text-sm text-text-primary outline-none placeholder:text-text-muted"
         placeholder="Search GitHub for repositories with good first issues…"
       />
       <button
@@ -31,4 +31,3 @@ export default function SearchBar({ initialQuery = "", onSearch }) {
     </form>
   );
 }
-

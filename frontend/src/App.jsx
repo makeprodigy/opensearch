@@ -132,14 +132,14 @@ export default function App() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen text-gray-900">
       {/* Application header with logo and navigation */}
-      <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur">
+      <header className="border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           {/* Logo linking to home */}
-          <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-brand">
-            <GitHubLogoIcon className="h-6 w-6" />
-            <span>Open Search</span>
+          <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
+            <GitHubLogoIcon className="h-6 w-6" style={{ color: '#2F7A4F' }} />
+            <span style={{ color: '#2F7A4F' }}>Open Search</span>
           </Link>
           {/* Navigation: show user info if logged in, login/signup if not */}
           <nav className="flex items-center gap-3 text-sm">
@@ -148,9 +148,9 @@ export default function App() {
                 {/* User badge - clickable, links to profile */}
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 rounded-full bg-slate-800 px-3 py-1 text-xs uppercase tracking-wide text-slate-300 transition hover:bg-slate-700 hover:text-white"
+                  className="flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs uppercase tracking-wide text-gray-900 font-medium transition hover:bg-emerald-100"
                 >
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand/30 text-[10px] font-bold text-brand">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white" style={{ backgroundColor: '#2F7A4F' }}>
                     {auth.user.username.charAt(0).toUpperCase()}
                   </span>
                   {auth.user.username}
@@ -158,7 +158,7 @@ export default function App() {
                 {/* Logout button */}
                 <button
                   type="button"
-                  className="rounded-lg bg-slate-800 px-3 py-1 font-medium text-slate-200 transition hover:bg-slate-700"
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-1 font-medium text-gray-900 transition hover:bg-gray-50 hover:border-gray-400"
                   onClick={() => {
                     auth.logout();
                     navigate("/");
@@ -170,13 +170,16 @@ export default function App() {
             ) : (
               <>
                 {/* Login link */}
-                <Link to="/login" className="text-slate-300 hover:text-slate-100">
+                <Link to="/login" className="text-gray-900 font-medium transition" style={{ color: '#2F7A4F' }} onMouseEnter={(e) => e.target.style.color = '#1F5A3A'} onMouseLeave={(e) => e.target.style.color = '#2F7A4F'}>
                   Log in
                 </Link>
                 {/* Signup button */}
                 <Link
                   to="/signup"
-                  className="rounded-lg bg-brand px-4 py-2 font-semibold text-white transition hover:bg-brand-dark"
+                  className="rounded-lg px-4 py-2 font-semibold text-white transition shadow-sm"
+                  style={{ backgroundColor: '#2F7A4F' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#1F5A3A'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#2F7A4F'}
                 >
                   Sign up
                 </Link>
@@ -215,14 +218,17 @@ export default function App() {
       </main>
 
       {/* Application footer */}
-      <footer className="border-t border-slate-800 bg-slate-900/80">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 text-xs text-slate-500">
+      <footer className="border-t border-gray-200 bg-white/95">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 text-xs text-gray-600">
           <span>&copy; {new Date().getFullYear()} Open Search</span>
           <a
             href="https://github.com/"
             target="_blank"
             rel="noreferrer"
-            className="hover:text-slate-300"
+            className="transition"
+            style={{ color: '#2F7A4F' }}
+            onMouseEnter={(e) => e.target.style.color = '#1F5A3A'}
+            onMouseLeave={(e) => e.target.style.color = '#2F7A4F'}
           >
             Source on GitHub
           </a>
@@ -231,4 +237,3 @@ export default function App() {
     </div>
   );
 }
-

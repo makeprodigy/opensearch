@@ -11,23 +11,23 @@ function HealthScoreBadge({ score }) {
   
   if (score >= 80) {
     // Excellent - Bright green
-    badgeClasses = "border-emerald-400/50 bg-emerald-500/20 text-emerald-300";
+    badgeClasses = "border-emerald-400 bg-emerald-100 text-emerald-700";
     label = "Excellent";
   } else if (score >= 65) {
     // Great - Medium green
-    badgeClasses = "border-green-400/50 bg-green-500/20 text-green-300";
+    badgeClasses = "border-green-400 bg-green-100 text-green-700";
     label = "Great";
   } else if (score >= 50) {
     // Good - Light green
-    badgeClasses = "border-lime-400/50 bg-lime-500/20 text-lime-300";
+    badgeClasses = "border-lime-400 bg-lime-100 text-lime-700";
     label = "Good";
   } else if (score >= 35) {
     // Fair - Blue/teal (neutral, not demoralizing)
-    badgeClasses = "border-cyan-400/50 bg-cyan-500/20 text-cyan-300";
+    badgeClasses = "border-cyan-400 bg-cyan-100 text-cyan-700";
     label = "Fair";
   } else {
     // Developing - Soft blue (encouraging, not red)
-    badgeClasses = "border-blue-400/50 bg-blue-500/20 text-blue-300";
+    badgeClasses = "border-blue-400 bg-blue-100 text-blue-700";
     label = "Developing";
   }
 
@@ -168,7 +168,7 @@ export default function RepoDetails({ auth }) {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-10 text-center text-sm text-slate-400">
+      <div className="rounded-xl border border-brand-light bg-white p-10 text-center text-sm text-text-secondary shadow-card">
         Loading repository details…
       </div>
     );
@@ -176,7 +176,7 @@ export default function RepoDetails({ auth }) {
 
   if (error || !data) {
     return (
-      <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-6 text-sm text-rose-200">
+      <div className="rounded-xl border border-rose-400 bg-rose-50 p-6 text-sm text-rose-700">
         {error ?? "Repository not found"}
       </div>
     );
@@ -193,24 +193,24 @@ export default function RepoDetails({ auth }) {
 
   return (
     <div className="space-y-8">
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-xl shadow-slate-950/20">
+      <div className="rounded-2xl border border-brand-light bg-white p-8 shadow-card">
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="space-y-4">
             {isLoadingActivity ? (
-              <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/40 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-400">
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-400 bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
                 <ReloadIcon className="h-3 w-3 animate-spin" />
                 Calculating health score...
               </div>
             ) : (
               <HealthScoreBadge score={data.health?.healthScore ?? 0} />
             )}
-            <h1 className="text-3xl font-bold text-white">{data.fullName}</h1>
-            <p className="max-w-2xl text-sm text-slate-400">{data.description}</p>
+            <h1 className="text-3xl font-bold text-text-primary">{data.fullName}</h1>
+            <p className="max-w-2xl text-sm text-text-secondary">{data.description}</p>
             <a
               href={`https://github.com/${data.fullName}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-800 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-brand hover:text-white"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-text-primary transition hover:border-brand hover:bg-brand-muted"
             >
               <GitHubLogoIcon className="h-4 w-4" />
               View on GitHub
@@ -221,7 +221,7 @@ export default function RepoDetails({ auth }) {
             <button
               type="button"
               onClick={reloadData}
-              className="inline-flex items-center gap-2 self-start rounded-lg border border-slate-800 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-200 transition hover:border-brand hover:text-white"
+              className="inline-flex items-center gap-2 self-start rounded-lg border border-gray-300 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-text-primary transition hover:border-brand hover:bg-brand-muted"
             >
               <ReloadIcon className="h-4 w-4" />
               Reload Data
@@ -239,41 +239,41 @@ export default function RepoDetails({ auth }) {
           </div>
         </div>
 
-        <dl className="mt-8 grid gap-6 text-sm text-slate-300 sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="mt-8 grid gap-6 text-sm sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <dt className="text-xs uppercase tracking-wide text-slate-500">Stars</dt>
-            <dd className="text-lg font-semibold">{data.stars?.toLocaleString() ?? 0}</dd>
+            <dt className="text-xs uppercase tracking-wide text-text-muted">Stars</dt>
+            <dd className="text-lg font-semibold text-text-primary">{data.stars?.toLocaleString() ?? 0}</dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-slate-500">Forks</dt>
-            <dd className="text-lg font-semibold">{data.forks?.toLocaleString() ?? 0}</dd>
+            <dt className="text-xs uppercase tracking-wide text-text-muted">Forks</dt>
+            <dd className="text-lg font-semibold text-text-primary">{data.forks?.toLocaleString() ?? 0}</dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-slate-500">Open issues</dt>
-            <dd className="text-lg font-semibold">{data.openIssues ?? 0}</dd>
+            <dt className="text-xs uppercase tracking-wide text-text-muted">Open issues</dt>
+            <dd className="text-lg font-semibold text-text-primary">{data.openIssues ?? 0}</dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-slate-500">Last commit</dt>
-            <dd className="text-lg font-semibold">
+            <dt className="text-xs uppercase tracking-wide text-text-muted">Last commit</dt>
+            <dd className="text-lg font-semibold text-text-primary">
               {data.lastCommitAt ? new Date(data.lastCommitAt).toLocaleString() : "Unknown"}
             </dd>
           </div>
         </dl>
       </div>
 
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 text-sm text-slate-300">
+      <div className="rounded-2xl border border-brand-light bg-white p-6 text-sm shadow-card">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Activity Snapshot (Last 30 Days)</h2>
+          <h2 className="text-lg font-semibold text-text-primary">Activity Snapshot (Last 30 Days)</h2>
           {isLoadingActivity && (
-            <span className="inline-flex items-center gap-2 text-xs text-amber-400">
+            <span className="inline-flex items-center gap-2 text-xs text-amber-600">
               <ReloadIcon className="h-3 w-3 animate-spin" />
               Fetching activity data...
             </span>
           )}
         </div>
-        <p className="mt-2 text-xs text-slate-400">
+        <p className="mt-2 text-xs text-text-muted">
           {isLoadingActivity ? (
-            <span className="text-amber-400">Processing in background...</span>
+            <span className="text-amber-600">Processing in background...</span>
           ) : (
             <>Updated {data.health?.refreshedAt ? new Date(data.health.refreshedAt).toLocaleString() : "never"}</>
           )}
@@ -283,32 +283,32 @@ export default function RepoDetails({ auth }) {
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="animate-pulse">
-                <dt className="text-xs uppercase tracking-wide text-slate-500">Loading...</dt>
-                <dd className="mt-1 h-7 w-16 rounded bg-slate-800"></dd>
+                <dt className="text-xs uppercase tracking-wide text-text-muted">Loading...</dt>
+                <dd className="mt-1 h-7 w-16 rounded bg-brand-muted"></dd>
               </div>
             ))}
           </div>
         ) : (
           <dl className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
-              <dt className="text-xs uppercase tracking-wide text-slate-500">Pull requests opened</dt>
-              <dd className="text-lg font-semibold">{data.health?.activity?.prsOpened ?? 0}</dd>
+              <dt className="text-xs uppercase tracking-wide text-text-muted">Pull requests opened</dt>
+              <dd className="text-lg font-semibold text-text-primary">{data.health?.activity?.prsOpened ?? 0}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wide text-slate-500">Pull requests merged</dt>
-              <dd className="text-lg font-semibold">{data.health?.activity?.prsMerged ?? 0}</dd>
+              <dt className="text-xs uppercase tracking-wide text-text-muted">Pull requests merged</dt>
+              <dd className="text-lg font-semibold text-text-primary">{data.health?.activity?.prsMerged ?? 0}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wide text-slate-500">Issues opened</dt>
-              <dd className="text-lg font-semibold">{data.health?.activity?.issuesOpened ?? 0}</dd>
+              <dt className="text-xs uppercase tracking-wide text-text-muted">Issues opened</dt>
+              <dd className="text-lg font-semibold text-text-primary">{data.health?.activity?.issuesOpened ?? 0}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wide text-slate-500">Comments on issues</dt>
-              <dd className="text-lg font-semibold">{data.health?.activity?.issuesComment ?? 0}</dd>
+              <dt className="text-xs uppercase tracking-wide text-text-muted">Comments on issues</dt>
+              <dd className="text-lg font-semibold text-text-primary">{data.health?.activity?.issuesComment ?? 0}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wide text-slate-500">Mean merge days</dt>
-              <dd className="text-lg font-semibold">
+              <dt className="text-xs uppercase tracking-wide text-text-muted">Mean merge days</dt>
+              <dd className="text-lg font-semibold text-text-primary">
                 {data.health?.activity?.meanMergeDays?.toFixed(1) ?? "0.0"}
               </dd>
             </div>
@@ -318,4 +318,3 @@ export default function RepoDetails({ auth }) {
     </div>
   );
 }
-
