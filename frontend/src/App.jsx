@@ -133,61 +133,75 @@ export default function App() {
 
   return (
     <div className="min-h-screen text-gray-900">
-      {/* Application header with logo and navigation */}
-      <header className="border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          {/* Logo linking to home */}
-          <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
-            <GitHubLogoIcon className="h-6 w-6" style={{ color: '#2F7A4F' }} />
-            <span style={{ color: '#2F7A4F' }}>GoodFirstFinder</span>
-          </Link>
-          {/* Navigation: show user info if logged in, login/signup if not */}
-          <nav className="flex items-center gap-3 text-sm">
-            {auth.user ? (
-              <>
-                {/* User badge - clickable, links to profile */}
-                <Link
-                  to="/profile"
-                  className="flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs uppercase tracking-wide text-gray-900 font-medium transition hover:bg-emerald-100"
-                >
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white" style={{ backgroundColor: '#2F7A4F' }}>
-                    {auth.user.username.charAt(0).toUpperCase()}
-                  </span>
-                  {auth.user.username}
-                </Link>
-                {/* Logout button */}
-                <button
-                  type="button"
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-1 font-medium text-gray-900 transition hover:bg-gray-50 hover:border-gray-400"
-                  onClick={() => {
-                    auth.logout();
-                    navigate("/");
-                  }}
-                >
-                  Sign out
-                </button>
-              </>
-            ) : (
-              <>
-                {/* Login link */}
-                <Link to="/login" className="text-gray-900 font-medium transition" style={{ color: '#2F7A4F' }} onMouseEnter={(e) => e.target.style.color = '#1F5A3A'} onMouseLeave={(e) => e.target.style.color = '#2F7A4F'}>
-                  Log in
-                </Link>
-                {/* Signup button */}
-                <Link
-                  to="/signup"
-                  className="rounded-lg px-4 py-2 font-semibold text-white transition shadow-sm"
-                  style={{ backgroundColor: '#2F7A4F' }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#1F5A3A'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#2F7A4F'}
-                >
-                  Sign up
-                </Link>
-              </>
-            )}
-          </nav>
-        </div>
-      </header>
+      {/* Floating navigation header */}
+      <div className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
+        <header className="mx-auto max-w-5xl rounded-2xl bg-white shadow-lg backdrop-blur-sm" style={{ boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)' }}>
+          <div className="flex items-center justify-between px-6 py-2.5">
+            {/* Logo linking to home */}
+            <Link to="/" className="flex items-center gap-2.5 text-lg font-bold">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: '#2F7A4F' }}>
+                <GitHubLogoIcon className="h-6 w-6 text-white" />
+              </div>
+              <span style={{ color: '#2F7A4F' }} className="text-lg">GoodFirstFinder</span>
+            </Link>
+            
+            {/* Navigation: show user info if logged in, login/signup if not */}
+            <nav className="flex items-center gap-3">
+              {auth.user ? (
+                <>
+                  {/* User badge - clickable, links to profile */}
+                  <Link
+                    to="/profile"
+                    className="flex items-center gap-2 rounded-xl bg-gray-50 px-3 py-1.5 text-sm font-medium text-gray-900 transition hover:bg-gray-100"
+                  >
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold text-white" style={{ backgroundColor: '#2F7A4F' }}>
+                      {auth.user.username.charAt(0).toUpperCase()}
+                    </span>
+                    {auth.user.username}
+                  </Link>
+                  {/* Logout button */}
+                  <button
+                    type="button"
+                    className="rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                    onClick={() => {
+                      auth.logout();
+                      navigate("/");
+                    }}
+                  >
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <>
+                  {/* Login link */}
+                  <Link 
+                    to="/login" 
+                    className="px-3 py-1.5 text-sm font-semibold transition rounded-xl hover:bg-gray-50" 
+                    style={{ color: '#2F7A4F' }} 
+                    onMouseEnter={(e) => e.target.style.color = '#1F5A3A'} 
+                    onMouseLeave={(e) => e.target.style.color = '#2F7A4F'}
+                  >
+                    Log in
+                  </Link>
+                  {/* Signup button */}
+                  <Link
+                    to="/signup"
+                    className="rounded-xl px-4 py-2 text-sm font-semibold text-white transition shadow-sm"
+                    style={{ backgroundColor: '#2F7A4F' }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#1F5A3A'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#2F7A4F'}
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
+            </nav>
+          </div>
+        </header>
+      </div>
+      
+      {/* Add padding to prevent content from hiding under fixed navbar */}
+      <div className="h-24"></div>
 
       {/* Main content area with routes */}
       <main className="mx-auto max-w-6xl px-4 py-8">
@@ -218,14 +232,14 @@ export default function App() {
       </main>
 
       {/* Application footer */}
-      <footer className="border-t border-gray-200 bg-white/95">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 text-xs text-gray-600">
+      <footer className="mt-20 border-t border-gray-200 bg-white/80 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-8 text-sm text-gray-600">
           <span>&copy; {new Date().getFullYear()} GoodFirstFinder</span>
           <a
             href="https://github.com/"
             target="_blank"
             rel="noreferrer"
-            className="transition"
+            className="font-medium transition"
             style={{ color: '#2F7A4F' }}
             onMouseEnter={(e) => e.target.style.color = '#1F5A3A'}
             onMouseLeave={(e) => e.target.style.color = '#2F7A4F'}
