@@ -34,6 +34,7 @@ GoodFirstFinder helps developers find welcoming GitHub repositories by intellige
 ## ✨ Features
 
 ### Core Functionality
+
 - 🎯 **Smart Repository Search** - Search GitHub for repositories with "good first issue" labels
 - 📊 **Health Score Ranking** - Custom algorithm combining stars, recency, and community activity (0-100 scale)
 - 🔄 **Real-time Data** - Live GitHub API integration with intelligent caching
@@ -42,6 +43,7 @@ GoodFirstFinder helps developers find welcoming GitHub repositories by intellige
 - 🧹 **Auto Cleanup** - Smart TTL-based cleanup prevents database bloat (<500MB storage limit)
 
 ### Advanced Features
+
 - 🎨 **Modern UI** - React + TailwindCSS with shadcn-inspired design
 - 🔍 **Advanced Filters** - Filter by language, stars, topics, license, update date, and more
 - 📈 **Activity Metrics** - Track PRs merged/opened, issues, and mean merge time (30-day windows)
@@ -54,30 +56,33 @@ GoodFirstFinder helps developers find welcoming GitHub repositories by intellige
 ## 🛠️ Tech Stack
 
 ### Backend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **Node.js** | 18+ | Runtime environment |
-| **Express.js** | 4.19+ | Web framework |
-| **Prisma ORM** | 5.18+ | Database ORM & migrations |
-| **MySQL** | 8.0+ | Relational database |
-| **JWT** | 9.0+ | Authentication tokens |
-| **bcryptjs** | 2.4+ | Password hashing |
-| **axios** | 1.7+ | HTTP client for GitHub API |
-| **node-cron** | 3.0+ | Background job scheduler |
-| **Pino** | 9.4+ | Structured logging |
+
+| Technology     | Version | Purpose                    |
+| -------------- | ------- | -------------------------- |
+| **Node.js**    | 18+     | Runtime environment        |
+| **Express.js** | 4.19+   | Web framework              |
+| **Prisma ORM** | 5.18+   | Database ORM & migrations  |
+| **MySQL**      | 8.0+    | Relational database        |
+| **JWT**        | 9.0+    | Authentication tokens      |
+| **bcryptjs**   | 2.4+    | Password hashing           |
+| **axios**      | 1.7+    | HTTP client for GitHub API |
+| **node-cron**  | 3.0+    | Background job scheduler   |
+| **Pino**       | 9.4+    | Structured logging         |
 
 ### Frontend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **React** | 18+ | UI library |
-| **Vite** | 5+ | Build tool & dev server |
-| **React Router** | 6+ | Client-side routing |
-| **TailwindCSS** | 3+ | Utility-first CSS |
-| **Axios** | 1.7+ | HTTP client |
-| **jwt-decode** | 4+ | JWT token parsing |
-| **Radix UI** | Latest | Accessible UI components |
+
+| Technology       | Version | Purpose                  |
+| ---------------- | ------- | ------------------------ |
+| **React**        | 18+     | UI library               |
+| **Vite**         | 5+      | Build tool & dev server  |
+| **React Router** | 6+      | Client-side routing      |
+| **TailwindCSS**  | 3+      | Utility-first CSS        |
+| **Axios**        | 1.7+    | HTTP client              |
+| **jwt-decode**   | 4+      | JWT token parsing        |
+| **Radix UI**     | Latest  | Accessible UI components |
 
 ### Infrastructure
+
 - **Database**: MySQL (Aiven Cloud)
 - **Deployment**: Vercel (Frontend), Render/Railway (Backend)
 - **Version Control**: Git/GitHub
@@ -134,29 +139,33 @@ GoodFirstFinder helps developers find welcoming GitHub repositories by intellige
 ### Data Flow
 
 #### 1. Search Flow (No DB Storage)
+
 ```
-User Search → Frontend → Backend /api/search 
-→ GitHub API → Calculate Health Score (on-the-fly) 
+User Search → Frontend → Backend /api/search
+→ GitHub API → Calculate Health Score (on-the-fly)
 → Return Results → Display in UI
 ```
 
 #### 2. Repository Details Flow (With DB Storage)
+
 ```
 User Clicks Repo → Frontend → Backend /api/search/:owner/:repo
-→ Check DB Cache → Fetch GitHub API (ETag) 
-→ Store/Update DB → Queue Refresh Job (if stale) 
+→ Check DB Cache → Fetch GitHub API (ETag)
+→ Store/Update DB → Queue Refresh Job (if stale)
 → Return Data → Display Details
 ```
 
 #### 3. Background Worker Flow
+
 ```
-Cron Job (Every 10s) → Fetch Queued Jobs 
-→ GitHub API (Repo + Activity) 
-→ Calculate Health Score → Update DB 
+Cron Job (Every 10s) → Fetch Queued Jobs
+→ GitHub API (Repo + Activity)
+→ Calculate Health Score → Update DB
 → Mark Job Complete
 ```
 
 #### 4. Cleanup Flow
+
 ```
 Cron Job (Every 1h) → Find Stale Repos (lastFetchedAt > TTL)
 → Delete from DB (Cascade) → Log Results
@@ -198,6 +207,7 @@ nano .env  # or use any text editor
 ```
 
 **Required `.env` configuration:**
+
 ```env
 PORT=4000
 DATABASE_URL="mysql://user:password@host:3306/opensearch"
@@ -225,6 +235,7 @@ Server runs on **http://localhost:4000**
 #### 3. Start Background Worker (Required!)
 
 **Open a new terminal:**
+
 ```bash
 cd backend
 npm run worker
@@ -235,6 +246,7 @@ The worker processes repository refresh jobs every 10 seconds.
 #### 4. Frontend Setup
 
 **Open another terminal:**
+
 ```bash
 cd frontend
 
@@ -250,9 +262,11 @@ Frontend runs on **http://localhost:5173**
 ### Verify Installation
 
 1. **Backend Health Check**: Visit http://localhost:4000/api/health
+
    - Should return: `{"status":"ok","timestamp":"..."}`
 
 2. **Frontend**: Visit http://localhost:5173
+
    - Should see the GoodFirstFinder homepage
 
 3. **Test Search**: Try searching for "react" or "python"
@@ -268,6 +282,7 @@ Frontend runs on **http://localhost:5173**
 ## 📡 API Documentation
 
 ### Base URL
+
 - **Development**: `http://localhost:4000/api`
 - **Production**: `https://your-domain.com/api`
 
@@ -276,11 +291,13 @@ Frontend runs on **http://localhost:5173**
 ### 🔓 Public Endpoints
 
 #### **Health Check**
+
 ```http
 GET /api/health
 ```
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -291,6 +308,7 @@ GET /api/health
 ---
 
 #### **Search Repositories**
+
 ```http
 GET /api/search?q={query}&page={page}&perPage={perPage}&sort={sort}&order={order}
 ```
@@ -298,18 +316,20 @@ GET /api/search?q={query}&page={page}&perPage={perPage}&sort={sort}&order={order
 **Query Parameters:**
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `q` | string | *required* | Search query (supports GitHub syntax) |
+| `q` | string | _required_ | Search query (supports GitHub syntax) |
 | `page` | number | 1 | Page number |
 | `perPage` | number | 10 | Results per page (max: 30) |
 | `sort` | string | "updated" | Sort by: `updated`, `stars`, `forks`, `best-match` |
 | `order` | string | "desc" | Sort order: `asc`, `desc` |
 
 **Example Request:**
+
 ```bash
 curl "http://localhost:4000/api/search?q=language:python+stars:>100&page=1&perPage=10"
 ```
 
 **Example Response:**
+
 ```json
 {
   "totalCount": 1234,
@@ -334,16 +354,19 @@ curl "http://localhost:4000/api/search?q=language:python+stars:>100&page=1&perPa
 ---
 
 #### **Get Repository Details**
+
 ```http
 GET /api/search/:owner/:repo
 ```
 
 **Example:**
+
 ```bash
 curl "http://localhost:4000/api/search/facebook/react"
 ```
 
 **Response:**
+
 ```json
 {
   "id": 1,
@@ -372,6 +395,7 @@ curl "http://localhost:4000/api/search/facebook/react"
 ---
 
 #### **List Stored Repositories (Sorted by Health Score)**
+
 ```http
 GET /api/repos?page={page}&perPage={perPage}
 ```
@@ -383,11 +407,13 @@ GET /api/repos?page={page}&perPage={perPage}
 | `perPage` | number | 12 | Results per page (max: 50) |
 
 **Example:**
+
 ```bash
 curl "http://localhost:4000/api/repos?page=1&perPage=12"
 ```
 
 **Response:**
+
 ```json
 {
   "total": 156,
@@ -399,7 +425,9 @@ curl "http://localhost:4000/api/repos?page=1&perPage=12"
       "fullName": "facebook/react",
       "healthScore": 92,
       "stars": 220000,
-      "latestActivity": { /* activity object */ }
+      "latestActivity": {
+        /* activity object */
+      }
     }
   ]
 }
@@ -408,16 +436,19 @@ curl "http://localhost:4000/api/repos?page=1&perPage=12"
 ---
 
 #### **Get Repository Health Score**
+
 ```http
 GET /api/repos/:id/health
 ```
 
 **Example:**
+
 ```bash
 curl "http://localhost:4000/api/repos/1/health"
 ```
 
 **Response:**
+
 ```json
 {
   "repositoryId": 1,
@@ -438,6 +469,7 @@ curl "http://localhost:4000/api/repos/1/health"
 ### 🔐 Protected Endpoints (Require Authentication)
 
 **Authentication Header:**
+
 ```
 Authorization: Bearer <your-jwt-token>
 ```
@@ -445,12 +477,14 @@ Authorization: Bearer <your-jwt-token>
 ---
 
 #### **Signup**
+
 ```http
 POST /api/auth/signup
 Content-Type: application/json
 ```
 
 **Request Body:**
+
 ```json
 {
   "username": "johndoe",
@@ -460,6 +494,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "user": {
@@ -475,12 +510,14 @@ Content-Type: application/json
 ---
 
 #### **Login**
+
 ```http
 POST /api/auth/login
 Content-Type: application/json
 ```
 
 **Request Body:**
+
 ```json
 {
   "email": "john@example.com",
@@ -489,6 +526,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "user": {
@@ -504,18 +542,21 @@ Content-Type: application/json
 ---
 
 #### **Refresh Repository Data**
+
 ```http
 POST /api/repos/:id/refresh
 Authorization: Bearer <token>
 ```
 
 **Example:**
+
 ```bash
 curl -X POST "http://localhost:4000/api/repos/1/refresh" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Refresh queued"
@@ -525,18 +566,21 @@ curl -X POST "http://localhost:4000/api/repos/1/refresh" \
 ---
 
 #### **Manual Cleanup**
+
 ```http
 POST /api/repos/cleanup
 Authorization: Bearer <token>
 ```
 
 **Example:**
+
 ```bash
 curl -X POST "http://localhost:4000/api/repos/cleanup" \
   -H "Authorization: Bearer <token>"
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Cleanup completed",
@@ -558,6 +602,7 @@ All endpoints return errors in this format:
 ```
 
 **Common HTTP Status Codes:**
+
 - `400` - Bad Request (missing/invalid parameters)
 - `401` - Unauthorized (invalid/missing token)
 - `404` - Not Found (resource doesn't exist)
@@ -636,62 +681,66 @@ All endpoints return errors in this format:
 ### Table Details
 
 #### **User**
+
 Stores authentication data for registered users.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | Int (PK) | Auto-increment primary key |
-| `username` | String (UNIQUE) | Unique username (lowercase) |
-| `email` | String (UNIQUE) | Unique email (lowercase) |
-| `passwordHash` | String | bcrypt hash (12 rounds) |
-| `createdAt` | DateTime | Account creation timestamp |
-| `updatedAt` | DateTime | Last update timestamp |
+| Field          | Type            | Description                 |
+| -------------- | --------------- | --------------------------- |
+| `id`           | Int (PK)        | Auto-increment primary key  |
+| `username`     | String (UNIQUE) | Unique username (lowercase) |
+| `email`        | String (UNIQUE) | Unique email (lowercase)    |
+| `passwordHash` | String          | bcrypt hash (12 rounds)     |
+| `createdAt`    | DateTime        | Account creation timestamp  |
+| `updatedAt`    | DateTime        | Last update timestamp       |
 
 #### **Repository**
+
 Cached GitHub repository metadata.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | Int (PK) | Auto-increment primary key |
-| `fullName` | String (UNIQUE) | `owner/repo` format |
-| `description` | Text | Repo description |
-| `stars` | Int | Stargazers count |
-| `forks` | Int | Forks count |
-| `openIssues` | Int | Open issues count |
-| `defaultBranch` | String | Default branch name |
-| `lastCommitAt` | DateTime | Last push timestamp |
-| `hasGoodFirstIssues` | Boolean | Has good first issues |
-| `etag` | String | GitHub ETag for caching |
-| `lastFetchedAt` | DateTime | **Used for TTL cleanup** |
-| `healthScore` | Int | 0-100 health score |
-| `healthRefreshedAt` | DateTime | Last health calculation |
+| Field                | Type            | Description                |
+| -------------------- | --------------- | -------------------------- |
+| `id`                 | Int (PK)        | Auto-increment primary key |
+| `fullName`           | String (UNIQUE) | `owner/repo` format        |
+| `description`        | Text            | Repo description           |
+| `stars`              | Int             | Stargazers count           |
+| `forks`              | Int             | Forks count                |
+| `openIssues`         | Int             | Open issues count          |
+| `defaultBranch`      | String          | Default branch name        |
+| `lastCommitAt`       | DateTime        | Last push timestamp        |
+| `hasGoodFirstIssues` | Boolean         | Has good first issues      |
+| `etag`               | String          | GitHub ETag for caching    |
+| `lastFetchedAt`      | DateTime        | **Used for TTL cleanup**   |
+| `healthScore`        | Int             | 0-100 health score         |
+| `healthRefreshedAt`  | DateTime        | Last health calculation    |
 
 #### **RepoActivity**
+
 30-day activity metrics for repositories.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | Int (PK) | Auto-increment primary key |
-| `repoId` | Int (FK) | Links to Repository |
-| `windowStart` | DateTime | 30-day window start |
-| `windowEnd` | DateTime | 30-day window end |
-| `prsMerged` | Int | PRs merged in window |
-| `prsOpened` | Int | PRs opened in window |
-| `issuesOpened` | Int | Issues opened in window |
-| `issuesComment` | Int | Total issue comments |
-| `meanMergeDays` | Float | Average days to merge PR |
+| Field           | Type     | Description                |
+| --------------- | -------- | -------------------------- |
+| `id`            | Int (PK) | Auto-increment primary key |
+| `repoId`        | Int (FK) | Links to Repository        |
+| `windowStart`   | DateTime | 30-day window start        |
+| `windowEnd`     | DateTime | 30-day window end          |
+| `prsMerged`     | Int      | PRs merged in window       |
+| `prsOpened`     | Int      | PRs opened in window       |
+| `issuesOpened`  | Int      | Issues opened in window    |
+| `issuesComment` | Int      | Total issue comments       |
+| `meanMergeDays` | Float    | Average days to merge PR   |
 
 #### **FetchJob**
+
 Background job queue for repository updates.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | Int (PK) | Auto-increment primary key |
-| `kind` | String | Job type (`refreshRepo`) |
-| `payload` | JSON | Job data `{ repoId: 123 }` |
-| `status` | String | `queued/processing/completed/failed` |
-| `attempts` | Int | Retry count (max: 3) |
-| `lastError` | String | Error message if failed |
+| Field       | Type     | Description                          |
+| ----------- | -------- | ------------------------------------ |
+| `id`        | Int (PK) | Auto-increment primary key           |
+| `kind`      | String   | Job type (`refreshRepo`)             |
+| `payload`   | JSON     | Job data `{ repoId: 123 }`           |
+| `status`    | String   | `queued/processing/completed/failed` |
+| `attempts`  | Int      | Retry count (max: 3)                 |
+| `lastError` | String   | Error message if failed              |
 
 ---
 
@@ -712,48 +761,54 @@ Health Score = 30 × Recency Score
 
 ### Factor Breakdown
 
-| Factor | Weight | Full Score Threshold | Description |
-|--------|--------|---------------------|-------------|
-| **Recency** | 30% | Last commit within 180 days | Prioritizes active projects |
-| **Stars** | 10% | 10,000+ stars (log scale) | Popularity indicator |
-| **Open Issues** | 10% | 100+ open issues | Community engagement |
-| **PRs Opened** | 25% | 20+ PRs in 30 days | Active contribution |
-| **PRs Merged** | 15% | 10+ merged in 30 days | Maintainer responsiveness |
-| **Issues Opened** | 10% | 10+ issues in 30 days | Active community |
+| Factor            | Weight | Full Score Threshold        | Description                 |
+| ----------------- | ------ | --------------------------- | --------------------------- |
+| **Recency**       | 30%    | Last commit within 180 days | Prioritizes active projects |
+| **Stars**         | 10%    | 10,000+ stars (log scale)   | Popularity indicator        |
+| **Open Issues**   | 10%    | 100+ open issues            | Community engagement        |
+| **PRs Opened**    | 25%    | 20+ PRs in 30 days          | Active contribution         |
+| **PRs Merged**    | 15%    | 10+ merged in 30 days       | Maintainer responsiveness   |
+| **Issues Opened** | 10%    | 10+ issues in 30 days       | Active community            |
 
 ### Scoring Logic
 
 #### 1. Recency (30 points)
+
 ```javascript
 recency = max(0, 1 - (daysOld / 180))
 score = recency × 30
 ```
 
 #### 2. Stars (10 points, logarithmic)
+
 ```javascript
 stars_score = min(log10(stars + 1) / 4, 1)
 score = stars_score × 10
 ```
 
 #### 3. Open Issues (10 points)
+
 ```javascript
 issues_score = min(openIssues / 100, 1)
 score = issues_score × 10
 ```
 
 #### 4. PRs Opened (25 points)
+
 ```javascript
 prs_opened_score = min(prsOpened / 20, 1)
 score = prs_opened_score × 25
 ```
 
 #### 5. PRs Merged (15 points)
+
 ```javascript
 prs_merged_score = min(prsMerged / 10, 1)
 score = prs_merged_score × 15
 ```
 
 #### 6. Issues Opened (10 points)
+
 ```javascript
 issues_opened_score = min(issuesOpened / 10, 1)
 score = issues_opened_score × 10
@@ -762,6 +817,7 @@ score = issues_opened_score × 10
 ### Example Calculation
 
 **Repository:** `facebook/react`
+
 - Last Commit: 5 days ago
 - Stars: 220,000
 - Open Issues: 1,234
@@ -770,6 +826,7 @@ score = issues_opened_score × 10
 - Issues Opened (30d): 89
 
 **Calculation:**
+
 ```
 Recency:      1.0 × 30 = 30.0
 Stars:        1.0 × 10 = 10.0
@@ -846,6 +903,7 @@ VITE_ENV=development
 4. Copy the token and add to `.env` file
 
 **Rate Limits:**
+
 - Without token: 60 requests/hour
 - With token: 5,000 requests/hour
 
@@ -858,12 +916,14 @@ VITE_ENV=development
 1. **Push to GitHub**
 2. **Import to Vercel**: https://vercel.com/new
 3. **Configure Build Settings**:
+
    - Framework: Vite
    - Build Command: `npm run build`
    - Output Directory: `dist`
    - Root Directory: `frontend`
 
 4. **Add Environment Variables**:
+
    ```
    VITE_API_BASE=https://your-backend-url.com/api
    ```
@@ -877,6 +937,7 @@ VITE_ENV=development
 1. **Create Web Service**: https://dashboard.render.com/new/web-service
 2. **Connect GitHub Repo**
 3. **Configure**:
+
    - Name: `opensearch-backend`
    - Environment: `Node`
    - Build Command: `cd backend && npm install && npx prisma generate`
@@ -894,6 +955,7 @@ VITE_ENV=development
 1. **New Project**: https://railway.app/new
 2. **Deploy from GitHub**
 3. **Add Services**:
+
    - **API Service**: Start command = `cd backend && npm start`
    - **Worker Service**: Start command = `cd backend && npm run worker`
    - **MySQL Database**: Railway provides managed MySQL
@@ -913,6 +975,7 @@ VITE_ENV=development
 ### Important: Run Both Backend Processes
 
 ⚠️ **You MUST run both:**
+
 1. **API Server** (`npm start`) - Handles HTTP requests
 2. **Worker** (`npm run worker`) - Processes background jobs
 
@@ -988,15 +1051,17 @@ We welcome contributions! Here's how to get started:
    ```
 3. **Make your changes**
 4. **Test thoroughly**:
+
    ```bash
    # Backend
    cd backend
    npm run lint
-   
+
    # Frontend
    cd frontend
    npm run build  # Check for build errors
    ```
+
 5. **Commit with clear messages**:
    ```bash
    git commit -m "feat: add amazing feature"
@@ -1064,18 +1129,21 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🗺️ Roadmap
 
 ### Version 1.1
+
 - [ ] Add favorites/bookmarks feature
 - [ ] Email notifications for repo updates
 - [ ] User profile pages
 - [ ] Repository comparison tool
 
 ### Version 1.2
+
 - [ ] GraphQL API support
 - [ ] Redis caching layer
 - [ ] Advanced analytics dashboard
 - [ ] GitHub OAuth integration
 
 ### Version 2.0
+
 - [ ] Multi-platform support (GitLab, Bitbucket)
 - [ ] AI-powered project recommendations
 - [ ] Contributor matching system
@@ -1092,4 +1160,3 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 [Report Bug](https://github.com/yourusername/opensearch/issues) · [Request Feature](https://github.com/yourusername/opensearch/issues) · [Documentation](https://github.com/yourusername/opensearch/wiki)
 
 </div>
-
