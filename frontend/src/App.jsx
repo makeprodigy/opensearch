@@ -135,7 +135,7 @@ export default function App() {
     <div className="min-h-screen text-gray-900">
       {/* Floating navigation header */}
       <div className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
-        <header className="mx-auto max-w-5xl rounded-2xl bg-white shadow-lg backdrop-blur-sm" style={{ boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)' }}>
+        <header className="mx-auto max-w-6xl rounded-2xl bg-white shadow-lg backdrop-blur-sm" style={{ boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)' }}>
           <div className="flex items-center justify-between px-6 py-2.5">
             {/* Logo linking to home */}
             <Link to="/" className="flex items-center gap-2.5 text-lg font-bold">
