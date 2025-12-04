@@ -30,7 +30,7 @@ export default function Signup({ auth }) {
       <header className="space-y-2 text-center">
         <h1 className="text-2xl font-semibold text-gray-900">Create your account</h1>
         <p className="text-sm text-gray-600">
-          Join Open Search to curate lists of repositories and request health refreshes.
+          Join GoodFirstFinder to curate lists of repositories and request health refreshes.
         </p>
       </header>
 

@@ -279,7 +279,7 @@ export default function UserProfile({ auth }) {
 
         <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-center">
           <p className="text-sm text-amber-800">
-            We're constantly improving Open Search. Stay tuned for these awesome features!
+            We're constantly improving GoodFirstFinder. Stay tuned for these awesome features!
           </p>
         </div>
       </section>

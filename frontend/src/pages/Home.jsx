@@ -403,7 +403,7 @@ export default function Home() {
           Discover welcoming open-source projects.
         </h1>
         <p className="mx-auto max-w-2xl text-sm text-gray-700 sm:text-base">
-          Open Search surfaces repositories that actively maintain good first issues.
+          GoodFirstFinder surfaces repositories that actively maintain good first issues.
           Each project is ranked by a health score that blends stars, recency, and community activity.
         </p>
       </section>

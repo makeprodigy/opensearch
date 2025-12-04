@@ -1,6 +1,6 @@
 # GoodFirstFinder Frontend
 
-React + Vite single-page application for the Open Search experience. Highlights repositories with “good first issues” and visualises their health scores.
+React + Vite single-page application for the GoodFirstFinder experience. Highlights repositories with "good first issues" and visualises their health scores.
 
 ## Setup
 

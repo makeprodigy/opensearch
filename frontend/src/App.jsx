@@ -139,7 +139,7 @@ export default function App() {
           {/* Logo linking to home */}
           <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
             <GitHubLogoIcon className="h-6 w-6" style={{ color: '#2F7A4F' }} />
-            <span style={{ color: '#2F7A4F' }}>Open Search</span>
+            <span style={{ color: '#2F7A4F' }}>GoodFirstFinder</span>
           </Link>
           {/* Navigation: show user info if logged in, login/signup if not */}
           <nav className="flex items-center gap-3 text-sm">
@@ -220,7 +220,7 @@ export default function App() {
       {/* Application footer */}
       <footer className="border-t border-gray-200 bg-white/95">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 text-xs text-gray-600">
-          <span>&copy; {new Date().getFullYear()} Open Search</span>
+          <span>&copy; {new Date().getFullYear()} GoodFirstFinder</span>
           <a
             href="https://github.com/"
             target="_blank"

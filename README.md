@@ -1,8 +1,8 @@
-# 🔍 Open Search (GoodFirstFinder)
+# 🔍 GoodFirstFinder
 
 > **A smart platform for discovering beginner-friendly open-source projects**
 
-Open Search helps developers find welcoming GitHub repositories by intelligently ranking projects with a custom health score algorithm. Perfect for beginners looking for their first open-source contribution or experienced developers seeking active, well-maintained projects.
+GoodFirstFinder helps developers find welcoming GitHub repositories by intelligently ranking projects with a custom health score algorithm. Perfect for beginners looking for their first open-source contribution or experienced developers seeking active, well-maintained projects.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
@@ -253,7 +253,7 @@ Frontend runs on **http://localhost:5173**
    - Should return: `{"status":"ok","timestamp":"..."}`
 
 2. **Frontend**: Visit http://localhost:5173
-   - Should see the Open Search homepage
+   - Should see the GoodFirstFinder homepage
 
 3. **Test Search**: Try searching for "react" or "python"
 
@@ -1085,7 +1085,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 <div align="center">
 
-**Made with ❤️ by the Open Search Team**
+**Made with ❤️ by the GoodFirstFinder Team**
 
 ⭐ Star us on GitHub if you find this helpful!
 
